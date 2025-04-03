@@ -1,7 +1,7 @@
 ﻿/*
     Hayden Hartmann
-    2/17/2025
-    Roman to Integer
+    3/30/2025
+    Leet Code Problems
 */
 
 
@@ -9,82 +9,205 @@ public class MyMain
 {
     public static void Main(string[] args)
     {
-        Console.WriteLine(ReturnInt("II"));
-        Console.WriteLine(ReturnInt("CXV"));
-        Console.WriteLine(ReturnInt("XVIII"));
-        Console.WriteLine();
-        Console.WriteLine(ReturnInt("IV"));
-        Console.WriteLine(ReturnInt("IX"));
-        Console.WriteLine(ReturnInt("XL"));
-        Console.WriteLine(ReturnInt("XC"));
-        Console.WriteLine(ReturnInt("CD"));
-        Console.WriteLine(ReturnInt("CM"));
+
+        Console.WriteLine(StrStr("my payday", "pay"));
+
+        int[] nums = new int[] { 0, 1, 2, 2, 3, 0, 4, 2 };
+        //                       1, 6, 3, 6, 5, 5, 5
+        int x = RemoveElement(nums, 2);
+        Console.WriteLine(x + " this");
+        foreach(int num in nums)
+        {
+            Console.Write(num + ", ");
+        }
+
+        int[] nums1 = { 1, 2, 3, 0, 0, 0 };
+        int[] nums2 = { 2, 5, 6 };
+        Merge2(nums1, 3, nums2, 3);
+        Console.WriteLine("TESTING");
+        foreach(int num in nums1)
+        {
+            Console.Write(num + ", ");
+        }
 
         Console.ReadKey();
     }
-
-    // method returns converted roman numeral to int
-    public static int ReturnInt(string s)
+    public static int[] SortArrayByParity(int[] nums)
     {
-        // declares variables and assigns them
-        string romanNumerals = "IVXLCDM";
-        int[] nums = [1, 5, 10, 50, 100, 500, 1000];
-        List<int> numbers = new List<int>();
-        int value = 0;
-        int skipValue = -1;
 
-        // loops through both "s" and "romanNumerals" to find were the chars are == and then adds the corresponding number from "nums" to the list "numbers"
-        for (int i = 0; i <= s.Length - 1; i++)
+        if (nums.Length == 1)
         {
-            for (int j = 0; j <= romanNumerals.Length - 1; j++)
+            return nums;
+        }
+        else
+        {
+            List<int> odds = new List<int>();
+            List<int> evens = new List<int>();
+            for (int i = 0; i <= nums.Length - 1; i++)
             {
-                if (romanNumerals[j] == s[i])
+                if (nums[i] % 2 == 0)
                 {
-                    numbers.Add(nums[j]);
+                    evens.Add(nums[i]);
+                }
+                else
+                {
+                    odds.Add(nums[i]);
+                }
+            }
+            for (int i = 0; i <= evens.Count - 1; i++)
+            {
+                nums[i] = evens[i];
+            }
+            for (int i = 0; i <= odds.Count - 1; i++)
+            {
+                nums[i + evens.Count] = odds[i];
+            }
+        }
+        return nums;
+
+    }
+    /*
+    public static int[] SortArrayByParity2(int[] nums)
+    {
+
+        if (nums.Length == 1)
+        {
+            return nums;
+        }
+        else
+        {
+            int count = 0;
+            for (int i = 0; i <= nums.Length - 1; i++)
+            {
+                if (nums[i] % 2 != 0)
+                {
+                    for 
                 }
             }
         }
+        return nums;
 
-        // this loops through "numbers" and adds values to "value" depending on some conditions
-        for (int i = 0; i <= numbers.Count - 1; i++)
+    }
+    */
+    public static void Merge(int[] nums1, int m, int[] nums2, int n)
+    {
+
+        if (n != 0)
         {
-            // this makes sure that we wont go out of bounds with checking next int, and then checks if the next int should be skipped
-            if (i != numbers.Count - 1 && i != skipValue)
+            int[] myNums = new int[m + n];
+            for (int i = 0; i <= nums1.Length - 1; i++)
             {
-                if (numbers[i] >= numbers[i + 1])
-                {
-                    value += numbers[i];
-                }
-                // if the int is less than the next in, we can then do math to find the value of both int's combined
-                else if (numbers[i] < numbers[i + 1])
-                {
-                    // all roman numerals are either multiplied by 4 or 9 when for example IV or XC
-                    if (numbers[i] * 5 == numbers[i + 1])
-                    {
-                        value += numbers[i] * 4;
-
-                        // we skip the next value in the list
-                        skipValue = i + 1;
-                    }
-                    else
-                    {
-                        value += numbers[i] * 9;
-                        skipValue = i + 1;
-                    }
-                }
+                myNums[i] = nums1[i];
             }
-            // if its the last int and it isn't being used with the previous int, (ie being skipped)
-            else if (i != skipValue)
+            for (int i = m; i <= nums2.Length + m - 1; i++)
             {
-                value += numbers[i];
+                myNums[i] = nums2[i - m];
+            }
+            Array.Sort(myNums);
+            for (int i = 0; i <= nums1.Length - 1; i++)
+            {
+                nums1[i] = myNums[i];
             }
         }
+    }
+    // shorter
+    public static void Merge2(int[] nums1, int m, int[] nums2, int n)
+    {
 
-        return value;
+        if (n != 0)
+        {
+            int[] myNums = new int[m + n];
+            for (int i = m; i <= nums1.Length - 1; i++)
+            {
+                nums1[i] = nums2[i - m];
+            }
+            Array.Sort(nums1);
+        }
+    }
+
+    public static int RemoveElement(int[] nums, int val)
+    {
+        //find how many "vals" are in array
+        int count = 0;
+        foreach (int num in nums)
+        {
+            if (num == val)
+            {
+                count++;
+            }
+        }
+        //loops through nums
+        for (int i = 0; i <= nums.Length - 1; i++)
+        {
+            if (nums[i] == val)
+            {
+                // loops through nums again and if the last position - j == val then swap current and last position, 
+                // but checks first if j <= count. count essentially means that we can only swap last positions
+                // prevents vals from swapping with previous values
+                for (int j = 1; j <= nums.Length; j++)
+                {
+                    if (nums[nums.Length - j] != val && j <= count)
+                    {
+                        (nums[i], nums[nums.Length - j]) = (nums[nums.Length - j], nums[i]);
+                        break;
+                    }
+                }
+            }
+        }
+        return count;
 
     }
 
+    public int[] TwoSum(int[] nums, int target) {
+
+        int count = 0;
+
+        while (true) {
+
+            for (int i = 0; i <= nums.Length - 1; i++) {
+
+                if (count != i && nums[count] + nums[i] == target) {
+                    int[] numbers = new int[] { count, i };
+                    return numbers;
+                }
+            }
+        count++;
+        }
+    }
+
+    public static int StrStr(string haystack, string needle)
+    {
+        // string needle in haystack? were at 
+        // abc abc
+
+        //checks if needle is shorter than haystack
+        if (needle.Length > haystack.Length)
+        {
+            return -1;
+        }
+
+        // loops through haystack letters
+        for (int i = 0; i <= haystack.Length - 1; i++)
+        {
+            string mySubstring = "";
+            // loops through needle letters and compares them to haystack
+            for (int j = 0; j <= needle.Length - 1; j++) 
+            {
+                if (i + j < haystack.Length && haystack[i + j] == needle[j])
+                {
+                    mySubstring += needle[j];
+                }
+                else
+                {
+                    break;
+                }
+                if (mySubstring == needle)
+                {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
 }
-
-
 
