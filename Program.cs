@@ -1,213 +1,192 @@
 ﻿/*
     Hayden Hartmann
-    3/30/2025
-    Leet Code Problems
+    4/13/2025
+    Leet Code Problems!!!
 */
-
 
 public class MyMain
 {
     public static void Main(string[] args)
     {
 
-        Console.WriteLine(StrStr("my payday", "pay"));
-
-        int[] nums = new int[] { 0, 1, 2, 2, 3, 0, 4, 2 };
-        //                       1, 6, 3, 6, 5, 5, 5
-        int x = RemoveElement(nums, 2);
-        Console.WriteLine(x + " this");
-        foreach(int num in nums)
-        {
-            Console.Write(num + ", ");
-        }
-
-        int[] nums1 = { 1, 2, 3, 0, 0, 0 };
-        int[] nums2 = { 2, 5, 6 };
-        Merge2(nums1, 3, nums2, 3);
-        Console.WriteLine("TESTING");
-        foreach(int num in nums1)
-        {
-            Console.Write(num + ", ");
-        }
-
+        bool vaal = IsValid("(){}[]");
+        Console.WriteLine(vaal);
         Console.ReadKey();
+
+        int v = CalPoints(["5", "2", "C", "D", "+"]);
     }
-    public static int[] SortArrayByParity(int[] nums)
+
+    // Valid Parentheses
+
+    public static bool IsValid(string s)
     {
 
-        if (nums.Length == 1)
+        Stack<char> myStack = new Stack<char>();
+
+        for (int i = 0; i <= s.Length - 1; i++)
         {
-            return nums;
-        }
-        else
-        {
-            List<int> odds = new List<int>();
-            List<int> evens = new List<int>();
-            for (int i = 0; i <= nums.Length - 1; i++)
+            if (s[i] == '(' || s[i] == '[' || s[i] == '{')
             {
-                if (nums[i] % 2 == 0)
-                {
-                    evens.Add(nums[i]);
-                }
+                myStack.Push(s[i]);
+            }
+            else if (myStack.Count == 0)
+            {
+                    return false;
+            }
                 else
+            {
+                char c = myStack.Pop();
+                if ((c == '(' && s[i] != ')') || (c == '[' && s[i] != ']') || (c == '{' && s[i] != '}'))
                 {
-                    odds.Add(nums[i]);
+                    return false;
                 }
             }
-            for (int i = 0; i <= evens.Count - 1; i++)
-            {
-                nums[i] = evens[i];
-            }
-            for (int i = 0; i <= odds.Count - 1; i++)
-            {
-                nums[i + evens.Count] = odds[i];
-            }
         }
-        return nums;
-
-    }
-    /*
-    public static int[] SortArrayByParity2(int[] nums)
-    {
-
-        if (nums.Length == 1)
+        if (myStack.Count == 0)
         {
-            return nums;
+            return true;
         }
         else
         {
-            int count = 0;
-            for (int i = 0; i <= nums.Length - 1; i++)
+            return false;
+        }
+    }
+
+    // Baseball Game
+
+    public static int CalPoints(string[] operations)
+    {
+
+        Stack<int> myStack = new Stack<int>();
+        int x = 0;
+        int y = 0;
+        int z = 0;
+        for (int i = 0; i <= operations.Length - 1; i++)
+        {
+
+            if (operations[i] != "D" && operations[i] != "+" && operations[i] != "C")
             {
-                if (nums[i] % 2 != 0)
+                x = Convert.ToInt32(operations[i]);
+                myStack.Push(x);
+            }
+            else
+            {
+                switch (operations[i])
                 {
-                    for 
+                    case "+":
+                        x = myStack.Pop();
+                        y = myStack.Pop();
+                        z = x + y;
+                        myStack.Push(x); myStack.Push(y); myStack.Push(z);
+                        break;
+                    case "D":
+                        x = myStack.Pop();
+                        y = x * 2;
+                        myStack.Push(x); myStack.Push(y);
+                        break;
+                    case "C":
+                        myStack.Pop();
+                        break;
+                    default:
+                        break;
                 }
             }
         }
-        return nums;
-
-    }
-    */
-    public static void Merge(int[] nums1, int m, int[] nums2, int n)
-    {
-
-        if (n != 0)
+        int v = 0;
+        foreach (int d in myStack)
         {
-            int[] myNums = new int[m + n];
-            for (int i = 0; i <= nums1.Length - 1; i++)
-            {
-                myNums[i] = nums1[i];
-            }
-            for (int i = m; i <= nums2.Length + m - 1; i++)
-            {
-                myNums[i] = nums2[i - m];
-            }
-            Array.Sort(myNums);
-            for (int i = 0; i <= nums1.Length - 1; i++)
-            {
-                nums1[i] = myNums[i];
-            }
+            v += d;
         }
-    }
-    // shorter
-    public static void Merge2(int[] nums1, int m, int[] nums2, int n)
-    {
-
-        if (n != 0)
-        {
-            int[] myNums = new int[m + n];
-            for (int i = m; i <= nums1.Length - 1; i++)
-            {
-                nums1[i] = nums2[i - m];
-            }
-            Array.Sort(nums1);
-        }
+        return v;
     }
 
-    public static int RemoveElement(int[] nums, int val)
+    // Find Pivot Index
+
+    public static int PivotIndex(int[] nums)
     {
-        //find how many "vals" are in array
-        int count = 0;
-        foreach (int num in nums)
-        {
-            if (num == val)
-            {
-                count++;
-            }
-        }
-        //loops through nums
+
         for (int i = 0; i <= nums.Length - 1; i++)
         {
-            if (nums[i] == val)
+            int left = 0;
+            int right = 0;
+            for (int j = 0; j <= nums.Length - 1; j++)
             {
-                // loops through nums again and if the last position - j == val then swap current and last position, 
-                // but checks first if j <= count. count essentially means that we can only swap last positions
-                // prevents vals from swapping with previous values
-                for (int j = 1; j <= nums.Length; j++)
+                if (i > j)
                 {
-                    if (nums[nums.Length - j] != val && j <= count)
-                    {
-                        (nums[i], nums[nums.Length - j]) = (nums[nums.Length - j], nums[i]);
-                        break;
-                    }
+                    left += nums[j];
+                }
+                else if (i < j)
+                {
+                    right += nums[j];
                 }
             }
-        }
-        return count;
-
-    }
-
-    public int[] TwoSum(int[] nums, int target) {
-
-        int count = 0;
-
-        while (true) {
-
-            for (int i = 0; i <= nums.Length - 1; i++) {
-
-                if (count != i && nums[count] + nums[i] == target) {
-                    int[] numbers = new int[] { count, i };
-                    return numbers;
-                }
-            }
-        count++;
-        }
-    }
-
-    public static int StrStr(string haystack, string needle)
-    {
-        // string needle in haystack? were at 
-        // abc abc
-
-        //checks if needle is shorter than haystack
-        if (needle.Length > haystack.Length)
-        {
-            return -1;
-        }
-
-        // loops through haystack letters
-        for (int i = 0; i <= haystack.Length - 1; i++)
-        {
-            string mySubstring = "";
-            // loops through needle letters and compares them to haystack
-            for (int j = 0; j <= needle.Length - 1; j++) 
+            if (left == right)
             {
-                if (i + j < haystack.Length && haystack[i + j] == needle[j])
-                {
-                    mySubstring += needle[j];
-                }
-                else
-                {
-                    break;
-                }
-                if (mySubstring == needle)
-                {
-                    return i;
-                }
+                return i;
             }
         }
         return -1;
+
     }
+
+    // Number of Student That Cant Eat Lunch
+
+    public static int CountStudents(int[] students, int[] sandwiches)
+    {
+        int count_0 = 0;
+        int count_1 = 0;
+
+        for (int i = 0; i <= students.Length - 1; i++)
+        {
+            if (students[i] == 0)
+            {
+                count_0++;
+            }
+            else
+            {
+                count_1++;
+            }
+        }
+
+        for (int i = 0; i <= sandwiches.Length - 1; i++)
+        {
+            if (sandwiches[i] == 0 && count_0 > 0)
+            {
+                count_0--;
+            }
+            else if (sandwiches[i] == 1 && count_1 > 0)
+            {
+                count_1--;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        return count_0 + count_1;
+    }
+
 }
 
+public class RecentCounter
+{
+
+    Queue<int> queue = new Queue<int>();
+
+    public RecentCounter()
+    {
+        queue = new Queue<int>();
+    }
+
+    public int Ping(int t)
+    {
+        queue.Enqueue(t);
+        while (t - queue.Peek() > 3000)
+        {
+            queue.Dequeue();
+        }
+
+        return queue.Count;
+    }
+}
