@@ -1,192 +1,130 @@
 ﻿/*
     Hayden Hartmann
-    4/13/2025
-    Leet Code Problems!!!
+    4/22/2025
+    Leet Code Problems: Homework Set 9
 */
+
+using System.Runtime.CompilerServices;
 
 public class MyMain
 {
     public static void Main(string[] args)
     {
-
-        bool vaal = IsValid("(){}[]");
-        Console.WriteLine(vaal);
+        bool test = IsHappy(19);
+        //MoveZeros([0, 1, 0, 3, 12]);
         Console.ReadKey();
-
-        int v = CalPoints(["5", "2", "C", "D", "+"]);
     }
 
-    // Valid Parentheses
-
-    public static bool IsValid(string s)
+    // Happy number   keep running value through to get a 'n' value less than 10, if its not 1 or 7, will loop infinitly
+    public static bool IsHappy(int n)
     {
-
-        Stack<char> myStack = new Stack<char>();
-
-        for (int i = 0; i <= s.Length - 1; i++)
+        if (n < 10)
         {
-            if (s[i] == '(' || s[i] == '[' || s[i] == '{')
+            if (n == 1 || n == 7) // if its 1 or 7, it will work
             {
-                myStack.Push(s[i]);
-            }
-            else if (myStack.Count == 0)
-            {
-                    return false;
-            }
-                else
-            {
-                char c = myStack.Pop();
-                if ((c == '(' && s[i] != ')') || (c == '[' && s[i] != ']') || (c == '{' && s[i] != '}'))
-                {
-                    return false;
-                }
-            }
-        }
-        if (myStack.Count == 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    // Baseball Game
-
-    public static int CalPoints(string[] operations)
-    {
-
-        Stack<int> myStack = new Stack<int>();
-        int x = 0;
-        int y = 0;
-        int z = 0;
-        for (int i = 0; i <= operations.Length - 1; i++)
-        {
-
-            if (operations[i] != "D" && operations[i] != "+" && operations[i] != "C")
-            {
-                x = Convert.ToInt32(operations[i]);
-                myStack.Push(x);
+                return true;
             }
             else
             {
-                switch (operations[i])
-                {
-                    case "+":
-                        x = myStack.Pop();
-                        y = myStack.Pop();
-                        z = x + y;
-                        myStack.Push(x); myStack.Push(y); myStack.Push(z);
-                        break;
-                    case "D":
-                        x = myStack.Pop();
-                        y = x * 2;
-                        myStack.Push(x); myStack.Push(y);
-                        break;
-                    case "C":
-                        myStack.Pop();
-                        break;
-                    default:
-                        break;
-                }
+                return false;
             }
         }
-        int v = 0;
-        foreach (int d in myStack)
+        int sum = 0;
+        while (n > 0)
         {
-            v += d;
+            int digit = n % 10;
+            sum += digit * digit;
+            n /= 10;
         }
-        return v;
+        return IsHappy(sum);
     }
 
-    // Find Pivot Index
-
-    public static int PivotIndex(int[] nums)
+    // Move Zeros
+    public static void MoveZeros(int[] nums)
     {
-
+        int previous = 0;
         for (int i = 0; i <= nums.Length - 1; i++)
         {
-            int left = 0;
-            int right = 0;
-            for (int j = 0; j <= nums.Length - 1; j++)
+            if (nums[i] != 0)
             {
-                if (i > j)
-                {
-                    left += nums[j];
-                }
-                else if (i < j)
-                {
-                    right += nums[j];
-                }
-            }
-            if (left == right)
-            {
-                return i;
+                nums[previous] = nums[i];
+                previous++;
             }
         }
-        return -1;
+        for (int i = previous; i <= nums.Length - 1; i++)
+        {
+            nums[i] = 0;
+        }
+    }
+
+    // Length of Last Word
+    public static int LengthOfLastWord(string s)
+    {
+
+        int len = 0;
+        for (int i = s.Length - 1; i >= 0; i--)
+        {
+            if (s[i] != ' ')
+            {
+                for (int j = i; j >= 0; j--)
+                {
+                    if (j == 0 && s[j] != ' ')
+                    {
+                        len++;
+                        return len;
+                    }
+                    else if (s[j] != ' ')
+                    {
+                        len++;
+                    }
+                    else
+                    {
+                        return len;
+                    }
+                }
+            }
+        }
+        return len;
 
     }
 
-    // Number of Student That Cant Eat Lunch
-
-    public static int CountStudents(int[] students, int[] sandwiches)
+    // Reverse String
+    public static void ReverseString(char[] s)
     {
-        int count_0 = 0;
-        int count_1 = 0;
-
-        for (int i = 0; i <= students.Length - 1; i++)
+        int count = s.Length - 1;
+        for (int i = 0; i < count; i++)
         {
-            if (students[i] == 0)
+            (s[i], s[count]) = (s[count], s[i]);
+            count--;
+        }
+    }
+
+    // Major Element
+    public static int MajorityElement(int[] nums)
+    {
+        Dictionary<int, int> myNumbers = new Dictionary<int, int>();
+        for (int i = 0; i <= nums.Length - 1; i++)
+        {
+            if (myNumbers.ContainsKey(nums[i]))
             {
-                count_0++;
+                myNumbers[nums[i]] += 1;
             }
             else
             {
-                count_1++;
+                myNumbers[nums[i]] = 0;
             }
         }
-
-        for (int i = 0; i <= sandwiches.Length - 1; i++)
+        int max = 0;
+        int maxKey = 0;
+        foreach (KeyValuePair<int, int> pair in myNumbers)
         {
-            if (sandwiches[i] == 0 && count_0 > 0)
+            if (pair.Value >= max)
             {
-                count_0--;
-            }
-            else if (sandwiches[i] == 1 && count_1 > 0)
-            {
-                count_1--;
-            }
-            else
-            {
-                break;
+                max = pair.Value;
+                maxKey = pair.Key;
             }
         }
-
-        return count_0 + count_1;
+        return maxKey;
     }
-
 }
 
-public class RecentCounter
-{
-
-    Queue<int> queue = new Queue<int>();
-
-    public RecentCounter()
-    {
-        queue = new Queue<int>();
-    }
-
-    public int Ping(int t)
-    {
-        queue.Enqueue(t);
-        while (t - queue.Peek() > 3000)
-        {
-            queue.Dequeue();
-        }
-
-        return queue.Count;
-    }
-}
